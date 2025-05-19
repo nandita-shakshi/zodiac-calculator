@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zodiac & Numerology Gemstone Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      color: #333;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #4b0082;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+    }
+    button {
+      background: #4b0082;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #result {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔮 Zodiac & Numerology Gemstone Finder</h2>
+
+  <label for="date">Enter Your Birth Date (1–31):</label>
+  <input type="number" id="date" min="1" max="31" required>
+
+  <label for="month">Select Your Birth Month:</label>
+  <select id="month">
+    <option value="">--Select Month--</option>
+    <option value="1">January</option>
+    <option value="2">February</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+
+  <button onclick="generateReport()">Calculate</button>
+
+  <div id="result"></div>
+
+  <script>
+    const zodiacSigns = [
+      { sign: "Capricorn", start: "12-22", end: "01-19", stone: "Garnet" },
+      { sign: "Aquarius", start: "01-20", end: "02-18", stone: "Amethyst" },
+      { sign: "Pisces", start: "02-19", end: "03-20", stone: "Aquamarine" },
+      { sign: "Aries", start: "03-21", end: "04-19", stone: "Red Coral" },
+      { sign: "Taurus", start: "04-20", end: "05-20", stone: "Emerald" },
+      { sign: "Gemini", start: "05-21", end: "06-20", stone: "Agate" },
+      { sign: "Cancer", start: "06-21", end: "07-22", stone: "Moonstone" },
+      { sign: "Leo", start: "07-23", end: "08-22", stone: "Ruby" },
+      { sign: "Virgo", start: "08-23", end: "09-22", stone: "Peridot" },
+      { sign: "Libra", start: "09-23", end: "10-22", stone: "Opal" },
+      { sign: "Scorpio", start: "10-23", end: "11-21", stone: "Topaz" },
+      { sign: "Sagittarius", start: "11-22", end: "12-21", stone: "Turquoise" }
+    ];
+
+    const numerologyTraits = {
+      1: "Leader, Independent, Ambitious",
+      2: "Diplomatic, Sensitive, Cooperative",
+      3: "Creative, Expressive, Optimistic",
+      4: "Practical, Hard-working, Reliable",
+      5: "Adventurous, Energetic, Freedom-loving",
+      6: "Responsible, Caring, Protective",
+      7: "Spiritual, Thoughtful, Analytical",
+      8: "Authoritative, Goal-Oriented, Confident",
+      9: "Compassionate, Generous, Wise"
+    };
+
+    function getSunSign(month, date) {
+      const input = `${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
+      for (let z of zodiacSigns) {
+        let start = z.start.split("-");
+        let end = z.end.split("-");
+        let startMonth = parseInt(start[0]), startDay = parseInt(start[1]);
+        let endMonth = parseInt(end[0]), endDay = parseInt(end[1]);
+
+        if ((month === startMonth && date >= startDay) || 
+            (month === endMonth && date <= endDay)) {
+          return z;
+        }
+      }
+      return null;
+    }
+
+    function getNumerologyNumber(date) {
+      while (date > 9) {
+        date = date.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+      }
+      return date;
+    }
+
+    function generateReport() {
+      const date = parseInt(document.getElementById("date").value);
+      const month = parseInt(document.getElementById("month").value);
+      const result = document.getElementById("result");
+
+      if (!date || !month) {
+        result.innerHTML = "<p style='color:red;'>Please enter a valid date and month.</p>";
+        return;
+      }
+
+      const numerologyNumber = getNumerologyNumber(date);
+      const numerologyTrait = numerologyTraits[numerologyNumber];
+
+      const zodiac = getSunSign(month, date);
+      if (!zodiac) {
+        result.innerHTML = "<p style='color:red;'>Could not determine zodiac sign.</p>";
+        return;
+      }
+
+      result.innerHTML = `
+        <h3>🔢 Numerology Number: ${numerologyNumber}</h3>
+        <p><strong>Traits:</strong> ${numerologyTrait}</p>
+        <h3>🌟 Sun Sign: ${zodiac.sign}</h3>
+        <p><strong>Suggested Gemstone:</strong> ${zodiac.stone}</p>
+        <p><strong>Lucky Color:</strong> Gold</p>
+        <p><em>“Let your inner light shine, ${zodiac.sign}!”</em></p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
